@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Release Root Contract - Styio</title>
+    <meta name="description" content="Static release-root contract used by spio and Styio tool installs.">
+    <link rel="icon" href="/assets/styio-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <img src="/assets/styio-mark.svg" alt="">
+          <span>Styio</span>
+        </a>
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="/docs/install.html">Install</a>
+          <a href="/docs/">Docs</a>
+          <a href="/docs/release-hosting.html">Release Hosting</a>
+          <a href="https://github.com/eBioRing/styio.io">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main class="wrap doc-layout">
+      <nav class="side-nav" aria-label="Documentation navigation">
+        <a href="#spio">spio</a>
+        <a href="#styio">styio</a>
+        <a href="#targets">Targets</a>
+        <a href="#validation">Validation</a>
+      </nav>
+      <article class="doc">
+        <h1>Release root contract</h1>
+        <p class="doc-lede">
+          This is the static file layout that the current shell installer and
+          spio prebuilt tool installer consume.
+        </p>
+
+        <h2 id="spio">spio installer paths</h2>
+        <pre><code>tools/spio/install-spio.sh
+tools/spio/channel/latest/&lt;platform&gt;/version
+tools/spio/releases/&lt;version&gt;/&lt;platform&gt;/spio
+tools/spio/releases/&lt;version&gt;/&lt;platform&gt;/spio.sha256
+tools/spio/latest.json</code></pre>
+
+        <h2 id="styio">Styio compiler paths</h2>
+        <pre><code>tools/&lt;release-target&gt;/channel/stable/&lt;platform&gt;/version
+tools/&lt;release-target&gt;/releases/&lt;version&gt;/&lt;platform&gt;/styio
+tools/&lt;release-target&gt;/releases/&lt;version&gt;/&lt;platform&gt;/styio.sha256
+tools/&lt;release-target&gt;/latest.json</code></pre>
+
+        <h2 id="targets">Release targets</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Purpose</th>
+              <th>Initial status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>styio-linux</code></td>
+              <td>Linux CLI, including glibc and musl platform keys.</td>
+              <td>arm64 alpha</td>
+            </tr>
+            <tr>
+              <td><code>styio-macos-cli</code></td>
+              <td>macOS command-line compiler.</td>
+              <td>Apple Silicon alpha</td>
+            </tr>
+            <tr>
+              <td><code>styio-macos-desktop-gui</code></td>
+              <td>Future macOS desktop application.</td>
+              <td>reserved</td>
+            </tr>
+            <tr>
+              <td><code>styio-windows-cli</code></td>
+              <td>Future Windows command-line compiler.</td>
+              <td>reserved</td>
+            </tr>
+            <tr>
+              <td><code>styio-windows-desktop-gui</code></td>
+              <td>Future Windows desktop application.</td>
+              <td>reserved</td>
+            </tr>
+            <tr>
+              <td><code>styio-ios</code></td>
+              <td>Future iOS client package.</td>
+              <td>reserved</td>
+            </tr>
+            <tr>
+              <td><code>styio-android</code></td>
+              <td>Future Android client package.</td>
+              <td>reserved</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 id="validation">Validation rules</h2>
+        <ul>
+          <li>Every channel pointer is a text file whose first field is a safe version segment.</li>
+          <li>Every binary has a sibling <code>.sha256</code> text file.</li>
+          <li>Platform keys use <code>darwin-aarch64</code>, <code>linux-aarch64</code>, or <code>linux-musl-aarch64</code> for the first alpha.</li>
+          <li>Release-root bundles are extracted into the Pages artifact, not committed to Git.</li>
+        </ul>
+      </article>
+    </main>
+  </body>
+</html>

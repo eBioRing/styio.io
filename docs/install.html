@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Install Styio</title>
+    <meta name="description" content="Install spio and the Styio compiler from the public release root.">
+    <link rel="icon" href="/assets/styio-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <img src="/assets/styio-mark.svg" alt="">
+          <span>Styio</span>
+        </a>
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="/docs/install.html">Install</a>
+          <a href="/docs/">Docs</a>
+          <a href="/docs/release-hosting.html">Release Hosting</a>
+          <a href="https://github.com/eBioRing/styio.io">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main class="wrap doc-layout">
+      <nav class="side-nav" aria-label="Documentation navigation">
+        <a href="#quickstart">Quickstart</a>
+        <a href="#targets">Targets</a>
+        <a href="#verify">Verify</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+      </nav>
+      <article class="doc">
+        <h1>Install Styio</h1>
+        <p class="doc-lede">
+          Install spio first, then let spio install the managed Styio compiler
+          from the same release root.
+        </p>
+
+        <h2 id="quickstart">Quickstart</h2>
+        <pre><code>curl -fsSL https://styio.io/tools/spio/install-spio.sh | sh -s -- --base-url https://styio.io && spio install styio@latest --prebuilt-only && styio --version</code></pre>
+        <p>
+          The installer stores the release root under
+          <code>$SPIO_HOME/config/tool-release-root</code>, so later
+          <code>spio install styio@latest</code> calls reuse the same static
+          package origin.
+        </p>
+
+        <div class="notice">
+          If <code>packages.styio.io</code> is later mapped to the same release
+          root, replace both <code>https://styio.io</code> values with
+          <code>https://packages.styio.io</code>.
+        </div>
+
+        <h2 id="targets">Supported alpha targets</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Release target</th>
+              <th>Platform key</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>macOS CLI on Apple Silicon</td>
+              <td><code>styio-macos-cli</code></td>
+              <td><code>darwin-aarch64</code></td>
+            </tr>
+            <tr>
+              <td>Linux CLI on glibc arm64</td>
+              <td><code>styio-linux</code></td>
+              <td><code>linux-aarch64</code></td>
+            </tr>
+            <tr>
+              <td>Linux CLI on musl arm64</td>
+              <td><code>styio-linux</code></td>
+              <td><code>linux-musl-aarch64</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          x86_64 builds, Windows CLI, desktop GUI, iOS, and Android targets are
+          part of the release namespace model but are not part of the first
+          alpha binary set.
+        </p>
+
+        <h2 id="verify">Verify</h2>
+        <pre><code>spio --version
+spio doctor --json
+spio tool status --json
+styio --version</code></pre>
+
+        <h2 id="troubleshooting">Troubleshooting</h2>
+        <h3>Permission denied for /usr/local/bin</h3>
+        <p>
+          Install into a user-owned directory and add it to your shell PATH:
+        </p>
+        <pre><code>mkdir -p "$HOME/.local/bin"
+curl -fsSL https://styio.io/tools/spio/install-spio.sh | sh -s -- --base-url https://styio.io --install-dir "$HOME/.local/bin"</code></pre>
+
+        <h3>Unsupported Linux distribution</h3>
+        <p>
+          The installer detects Ubuntu/Debian, Fedora/CentOS Stream/Alma
+          Linux/Rocky Linux/RHEL, Arch Linux/Manjaro, openSUSE, and Alpine.
+          Use the adapter diagnostic to inspect the detected package family:
+        </p>
+        <pre><code>curl -fsSL https://styio.io/tools/spio/install-spio.sh | sh -s -- --print-adapter</code></pre>
+
+        <h3>No prebuilt Styio release found</h3>
+        <p>
+          That means the release root does not yet contain a channel pointer or
+          binary for your platform. During alpha, use a supported platform or
+          install from source without <code>--prebuilt-only</code>.
+        </p>
+      </article>
+    </main>
+  </body>
+</html>

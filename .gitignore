@@ -1,0 +1,10 @@
+_site/
+.release-bundle/
+.playwright-cli/
+output/
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.zst
+tools/*/releases/

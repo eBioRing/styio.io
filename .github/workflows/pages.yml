@@ -1,0 +1,106 @@
+name: Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      release_bundle_repo:
+        description: "Repository containing the release-root bundle asset"
+        required: false
+        default: ""
+      release_bundle_tag:
+        description: "GitHub Release tag containing the release-root bundle"
+        required: false
+        default: ""
+      release_bundle_asset:
+        description: "Release asset name, for example styio-release-root-0.1.0-alpha.tar.gz"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve release bundle inputs
+        id: bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="${{ inputs.release_bundle_repo || '' }}"
+          tag="${{ inputs.release_bundle_tag || '' }}"
+          asset="${{ inputs.release_bundle_asset || '' }}"
+
+          if [[ -z "$repo" && -f release-root-source.env ]]; then
+            # shellcheck disable=SC1091
+            source release-root-source.env
+            repo="${RELEASE_BUNDLE_REPO:-}"
+            tag="${RELEASE_BUNDLE_TAG:-}"
+            asset="${RELEASE_BUNDLE_ASSET:-}"
+          fi
+
+          if [[ -n "$repo$tag$asset" ]]; then
+            [[ -n "$repo" && -n "$tag" && -n "$asset" ]] || {
+              echo "release bundle repo, tag, and asset must be provided together" >&2
+              exit 1
+            }
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "repo=$repo" >> "$GITHUB_OUTPUT"
+            echo "tag=$tag" >> "$GITHUB_OUTPUT"
+            echo "asset=$asset" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download release-root bundle
+        if: steps.bundle.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .release-bundle
+          gh release download "${{ steps.bundle.outputs.tag }}" \
+            --repo "${{ steps.bundle.outputs.repo }}" \
+            --pattern "${{ steps.bundle.outputs.asset }}" \
+            --dir .release-bundle
+
+      - name: Build site
+        run: |
+          if [ "${{ steps.bundle.outputs.enabled }}" = "true" ]; then
+            scripts/build-site.sh _site ".release-bundle/${{ steps.bundle.outputs.asset }}"
+            REQUIRE_RELEASE_BINARIES=1 scripts/validate-release-root.sh _site
+          else
+            scripts/build-site.sh _site
+          fi
+
+      - name: Smoke test
+        run: scripts/smoke-site.sh
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

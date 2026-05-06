@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Release Hosting - Styio</title>
+    <meta name="description" content="Publish Styio release-root bundles through GitHub Releases and GitHub Pages.">
+    <link rel="icon" href="/assets/styio-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <img src="/assets/styio-mark.svg" alt="">
+          <span>Styio</span>
+        </a>
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="/docs/install.html">Install</a>
+          <a href="/docs/">Docs</a>
+          <a href="/docs/release-hosting.html">Release Hosting</a>
+          <a href="https://github.com/eBioRing/styio.io">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main class="wrap doc-layout">
+      <nav class="side-nav" aria-label="Documentation navigation">
+        <a href="#model">Model</a>
+        <a href="#bundle">Bundle</a>
+        <a href="#publish">Publish</a>
+        <a href="#workflow">Pages Workflow</a>
+        <a href="#policy">Policy</a>
+      </nav>
+      <article class="doc">
+        <h1>Release hosting</h1>
+        <p class="doc-lede">
+          The startup flow uses GitHub Releases for versioned storage and
+          GitHub Pages for a stable static read plane compatible with current
+          spio clients.
+        </p>
+
+        <h2 id="model">Model</h2>
+        <p>
+          Large binaries should not be committed to this repository. Instead,
+          a release-root bundle is produced outside the site source tree,
+          uploaded to GitHub Releases, then extracted into the Pages deployment
+          artifact.
+        </p>
+        <div class="pipeline">
+          <div class="step">
+            <small>Build</small>
+            <strong>CLI binaries</strong>
+            <span>spio and styio are built for each supported platform.</span>
+          </div>
+          <div class="step">
+            <small>Stage</small>
+            <strong>Static root</strong>
+            <span>styio-platform writes tools/, channel pointers, and sha256 files.</span>
+          </div>
+          <div class="step">
+            <small>Store</small>
+            <strong>GitHub Release</strong>
+            <span>The bundle is attached to a release tag for auditability.</span>
+          </div>
+          <div class="step">
+            <small>Serve</small>
+            <strong>GitHub Pages</strong>
+            <span>Pages exposes the exact paths expected by installers.</span>
+          </div>
+        </div>
+
+        <h2 id="bundle">Create a release-root bundle</h2>
+        <p>
+          Use <code>styio-platform</code>'s publisher to place each binary into
+          a temporary registry root. Example:
+        </p>
+        <pre><code>release_root="$(mktemp -d)"
+
+python3 /path/to/styio-platform/scripts/publish-spio-tool-release.py \
+  --registry-root "$release_root" \
+  --tool spio \
+  --binary /path/to/spio \
+  --binary-name spio \
+  --version 0.1.0-alpha \
+  --platform darwin-aarch64 \
+  --install-script /path/to/styio-spio/scripts/install-spio.sh
+
+python3 /path/to/styio-platform/scripts/publish-spio-tool-release.py \
+  --registry-root "$release_root" \
+  --tool styio \
+  --binary /path/to/styio \
+  --binary-name styio \
+  --version 0.0.1 \
+  --platform darwin-aarch64 \
+  --release-target styio-macos-cli \
+  --channel stable
+
+scripts/validate-release-root.sh "$release_root"
+tar -C "$release_root" -czf styio-release-root-0.1.0-alpha.tar.gz tools</code></pre>
+        <p>
+          Repeat the publish command for each supported platform before
+          archiving the root.
+        </p>
+
+        <h2 id="publish">Upload to GitHub Releases</h2>
+        <pre><code>gh release create release-root-0.1.0-alpha \
+  styio-release-root-0.1.0-alpha.tar.gz \
+  --repo eBioRing/styio.io \
+  --title "Styio release root 0.1.0-alpha" \
+  --notes "Static release root for spio 0.1.0-alpha and styio 0.0.1"</code></pre>
+
+        <h2 id="workflow">Deploy through Pages</h2>
+        <p>
+          Run the Pages workflow manually with the release bundle inputs:
+        </p>
+        <pre><code>gh workflow run pages.yml \
+  --repo eBioRing/styio.io \
+  -f release_bundle_repo=eBioRing/styio.io \
+  -f release_bundle_tag=release-root-0.1.0-alpha \
+  -f release_bundle_asset=styio-release-root-0.1.0-alpha.tar.gz</code></pre>
+        <p>
+          The workflow builds the static site, downloads the bundle, extracts
+          it into <code>_site/</code>, validates the release root, and deploys
+          the combined artifact to GitHub Pages.
+        </p>
+
+        <h2 id="policy">Policy</h2>
+        <ul>
+          <li>Do not commit files under <code>tools/*/releases/</code>.</li>
+          <li>Release-root bundles are immutable once announced publicly.</li>
+          <li>Every binary must have a matching <code>.sha256</code> file.</li>
+          <li>Channel pointers must be plain text version files for shell compatibility.</li>
+          <li>GitHub Releases are the audit source; Pages is the static read plane.</li>
+        </ul>
+      </article>
+    </main>
+  </body>
+</html>
