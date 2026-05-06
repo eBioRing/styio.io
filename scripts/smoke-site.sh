@@ -23,9 +23,16 @@ for path in \
   docs/release-hosting.html \
   docs/release-root-contract.html \
   docs/dns-and-pages.html \
+  assets/copy-code.js \
   tools/spio/install-spio.sh
 do
   [ -f "$tmp_dir/site/$path" ] || fail "missing built site file: $path"
+done
+
+for html in $(find "$repo_root" -name "*.html" -not -path "*/_site/*" -not -path "*/.git/*" | sort); do
+  if grep -q "<pre><code" "$html"; then
+    grep -q "/assets/copy-code.js" "$html" || fail "copy-code.js is not loaded by $html"
+  fi
 done
 
 if find "$repo_root/tools" -path "*/releases/*" -type f | grep . >/dev/null 2>&1; then
