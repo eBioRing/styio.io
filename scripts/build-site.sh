@@ -49,6 +49,7 @@ if [ -n "$bundle" ]; then
   trap cleanup EXIT INT TERM
 
   tar -xzf "$bundle" -C "$tmp_dir"
+  find "$tmp_dir" -name "._*" -type f -delete
   [ -d "$tmp_dir/tools" ] || fail "release-root bundle must contain top-level tools/"
   rm -rf "$site_dir/tools"
   cp -R "$tmp_dir/tools" "$site_dir/tools"
