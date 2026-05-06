@@ -68,7 +68,6 @@ img {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
   color: var(--ink);
   font-weight: 760;
   letter-spacing: 0;
@@ -76,8 +75,8 @@ img {
 }
 
 .brand img {
-  width: 34px;
-  height: 34px;
+  width: 134px;
+  height: auto;
   display: block;
 }
 
@@ -158,40 +157,6 @@ img {
   transform: translateY(-1px);
 }
 
-.terminal {
-  border: 1px solid #1f2937;
-  border-radius: 8px;
-  background: var(--code-bg);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.terminal-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 38px;
-  padding: 0 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  color: #aeb8c7;
-  font-size: 12px;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #ef4444;
-}
-
-.dot:nth-child(2) {
-  background: #f59e0b;
-}
-
-.dot:nth-child(3) {
-  background: #22c55e;
-}
-
 pre {
   position: relative;
   margin: 0;
@@ -206,9 +171,8 @@ pre {
   word-break: break-word;
 }
 
-.terminal pre {
-  border-radius: 0;
-  background: transparent;
+.hero-code {
+  box-shadow: var(--shadow);
 }
 
 code {
