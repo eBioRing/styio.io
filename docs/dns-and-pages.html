@@ -42,6 +42,39 @@
           <li>Use GitHub Releases as the durable source for release-root bundles.</li>
           <li>Use the Pages workflow to publish docs plus the compatible static read root.</li>
         </ul>
+        <p>
+          For GitHub Actions based Pages deployments, the custom domain is a
+          repository Pages setting. The checked-in <code>CNAME</code> file is
+          kept as a visible domain marker, but the Pages setting is the source
+          of truth.
+        </p>
+
+        <h3>Recommended DNS records</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Name</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>A</code></td><td><code>@</code></td><td><code>185.199.108.153</code></td></tr>
+            <tr><td><code>A</code></td><td><code>@</code></td><td><code>185.199.109.153</code></td></tr>
+            <tr><td><code>A</code></td><td><code>@</code></td><td><code>185.199.110.153</code></td></tr>
+            <tr><td><code>A</code></td><td><code>@</code></td><td><code>185.199.111.153</code></td></tr>
+            <tr><td><code>AAAA</code></td><td><code>@</code></td><td><code>2606:50c0:8000::153</code></td></tr>
+            <tr><td><code>AAAA</code></td><td><code>@</code></td><td><code>2606:50c0:8001::153</code></td></tr>
+            <tr><td><code>AAAA</code></td><td><code>@</code></td><td><code>2606:50c0:8002::153</code></td></tr>
+            <tr><td><code>AAAA</code></td><td><code>@</code></td><td><code>2606:50c0:8003::153</code></td></tr>
+            <tr><td><code>CNAME</code></td><td><code>www</code></td><td><code>eBioRing.github.io</code></td></tr>
+          </tbody>
+        </table>
+        <p>
+          Remove registrar parking, URL forwarding, and wildcard records before
+          expecting GitHub Pages to serve the domain. HTTPS enforcement can be
+          enabled after GitHub issues the certificate.
+        </p>
 
         <h2 id="packages">Package domain</h2>
         <p>

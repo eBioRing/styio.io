@@ -33,6 +33,10 @@ curl -fsSL https://styio.io/tools/spio/install-spio.sh | sh -s -- --base-url htt
 If `packages.styio.io` is later pointed at the same Pages deployment or a CDN
 mirror, the base URL can be changed without changing the release-root layout.
 
+The repository is configured for GitHub Pages workflow deployments. The custom
+domain is stored in the GitHub Pages repository setting; the checked-in `CNAME`
+file is only a visible domain marker for maintainers.
+
 ## Release-Root Bundle Flow
 
 Current `spio` clients expect a static read root with paths such as:
