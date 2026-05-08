@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Styio</title>
-    <meta name="description" content="Styio language tooling, spio package management, and release distribution.">
+    <meta name="description" content="Styio &mdash; a programming language built to be avant-garde, comfortable, and uncompromising.">
     <link rel="icon" href="/assets/styio-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/styles.css">
+    <script>(function(){var a=['cool','cool-dark'];var t=localStorage.getItem('styio-theme');if(a.indexOf(t)<0)t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'cool':'cool-dark';document.documentElement.setAttribute('data-theme',t);}());</script>
   </head>
   <body>
     <header class="site-header">
@@ -17,8 +18,11 @@
         <nav class="nav" aria-label="Primary navigation">
           <a href="/docs/install.html">Install</a>
           <a href="/docs/">Docs</a>
-          <a href="/docs/release-hosting.html">Release Hosting</a>
           <a href="https://github.com/eBioRing/styio.io">GitHub</a>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle color scheme">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
         </nav>
       </div>
     </header>
@@ -27,106 +31,78 @@
       <section class="hero">
         <div class="wrap hero-grid">
           <div>
-            <h1>Install Styio from a versioned release root.</h1>
+            <h1>Resources,<br>in flow.</h1>
             <p>
-              Styio uses spio to install the compiler, verify release checksums,
-              and keep the local toolchain pinned to published CLI builds.
+              Styio is a symbolic language for stream processing, resource scheduling,
+              and intent expression &mdash; built on LLVM. Direct operators, no boilerplate.
             </p>
             <div class="actions">
               <a class="button primary" href="/docs/install.html">Install Styio</a>
-              <a class="button" href="/docs/release-hosting.html">Publish Releases</a>
+              <a class="button" href="https://github.com/eBioRing/styio">GitHub &nearr;</a>
+              <span class="hero-eyebrow">Alpha &middot; Early Access</span>
             </div>
           </div>
-          <pre class="hero-code" aria-label="Styio install command"><code>curl -fsSL https://styio.io/tools/spio/install-spio.sh | sh -s -- --base-url https://styio.io
-spio install styio@latest --prebuilt-only
-styio --version</code></pre>
+          <pre class="hero-code" aria-label="Styio Fibonacci stream example"><code># fib := (n: i32) ?= {
+    0 => 0
+    1 => 1
+    _ => fib(n - 1) + fib(n - 2)
+}
+
+@stdin >> #(n) => {
+  fib(n) -> @stdout
+}</code></pre>
         </div>
       </section>
 
-      <section class="section tight">
-        <div class="wrap grid-3">
-          <article class="card">
-            <h3>Static read plane</h3>
-            <p>Pages serves installer scripts, channel pointers, checksums, and release binaries through stable paths.</p>
-          </article>
-          <article class="card">
-            <h3>Release assets stay outside Git</h3>
-            <p>Operators upload a release-root bundle to GitHub Releases. The Pages workflow extracts it into the deployment artifact.</p>
-          </article>
-          <article class="card">
-            <h3>Client-compatible today</h3>
-            <p>The layout matches current spio lookup rules for macOS CLI, Linux glibc CLI, and Linux musl CLI builds.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
+      <section class="pillars-section">
         <div class="wrap">
-          <h2>Current alpha surface</h2>
-          <p class="section-lede">
-            The first public flow is intentionally narrow: install spio, use it
-            to install the prebuilt Styio compiler, then verify the compiler.
-          </p>
-          <div class="grid-2">
-            <div class="card">
-              <h3>Supported first targets</h3>
-              <ul class="status-list">
-                <li><span class="check">OK</span><span>macOS arm64 CLI: <code>styio-macos-cli/darwin-aarch64</code></span></li>
-                <li><span class="check">OK</span><span>Linux glibc arm64 CLI: <code>styio-linux/linux-aarch64</code></span></li>
-                <li><span class="check">OK</span><span>Linux musl arm64 CLI: <code>styio-linux/linux-musl-aarch64</code></span></li>
-              </ul>
+          <div class="pillars">
+            <div class="pillar">
+              <div class="pillar-heading">
+                <div class="pillar-glyph operator-mark operator-pipe" aria-hidden="true">
+                  <span class="operator-chevron" aria-hidden="true"></span>
+                  <span class="operator-chevron" aria-hidden="true"></span>
+                </div>
+                <h3>Stream-native</h3>
+              </div>
+              <div class="pillar-copy">
+                <p>Built for data flows, resource topology, and pulse-driven computation &mdash; not adapted, designed.</p>
+              </div>
             </div>
-            <div class="card">
-              <h3>Distribution contract</h3>
-              <ul class="status-list">
-                <li><span class="check">OK</span><span>Shell installer uses curl and checksum verification.</span></li>
-                <li><span class="check">OK</span><span><code>spio install styio@latest</code> reads static channel pointers.</span></li>
-                <li><span class="check">OK</span><span>Large release bundles are generated outside repository history.</span></li>
-              </ul>
+            <div class="pillar">
+              <div class="pillar-heading">
+                <div class="pillar-glyph operator-mark operator-yield" aria-hidden="true">
+                  <span class="operator-stem" aria-hidden="true"></span>
+                  <span class="operator-chevron" aria-hidden="true"></span>
+                </div>
+                <h3>Symbol-first</h3>
+              </div>
+              <div class="pillar-copy">
+                <p>Fewer natural language keywords. Direct operators that read exactly like what they do.</p>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="wrap">
-          <h2>Release pipeline</h2>
-          <p class="section-lede">
-            styio-platform owns artifact publication. This repository owns
-            the public static surface and Pages deployment.
-          </p>
-          <div class="pipeline" aria-label="Release pipeline">
-            <div class="step">
-              <small>1</small>
-              <strong>Build</strong>
-              <span>Produce spio and styio binaries for supported platforms.</span>
-            </div>
-            <div class="step">
-              <small>2</small>
-              <strong>Stage</strong>
-              <span>Use the platform publisher to create a static release-root tree.</span>
-            </div>
-            <div class="step">
-              <small>3</small>
-              <strong>Archive</strong>
-              <span>Upload the release-root bundle as a GitHub Release asset.</span>
-            </div>
-            <div class="step">
-              <small>4</small>
-              <strong>Deploy</strong>
-              <span>Run the Pages workflow to expose the release root and docs.</span>
+            <div class="pillar">
+              <div class="pillar-heading">
+                <div class="pillar-glyph operator-mark operator-bind" aria-hidden="true">
+                  <span class="operator-dot" aria-hidden="true"></span>
+                  <span class="operator-bar" aria-hidden="true"></span>
+                  <span class="operator-dot" aria-hidden="true"></span>
+                  <span class="operator-bar" aria-hidden="true"></span>
+                </div>
+                <h3>Performance-first</h3>
+              </div>
+              <div class="pillar-copy">
+                <p>The recommended way to write Styio is always the fast way. No low-level workarounds needed.</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="wrap footer-inner">
-        <span>Styio release distribution</span>
-        <span><a href="/docs/release-hosting.html">Operator docs</a></span>
-      </div>
-    </footer>
+    <footer class="site-footer" data-site-footer></footer>
     <script src="/assets/copy-code.js" defer></script>
+    <script src="/assets/site-footer.js" defer></script>
+    <script src="/assets/theme-toggle.js" defer></script>
   </body>
 </html>

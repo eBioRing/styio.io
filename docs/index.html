@@ -7,6 +7,7 @@
     <meta name="description" content="Styio install, release hosting, and operator documentation.">
     <link rel="icon" href="/assets/styio-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/styles.css">
+    <script>(function(){var a=['cool','cool-dark'];var t=localStorage.getItem('styio-theme');if(a.indexOf(t)<0)t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'cool':'cool-dark';document.documentElement.setAttribute('data-theme',t);}());</script>
   </head>
   <body>
     <header class="site-header">
@@ -17,50 +18,36 @@
         <nav class="nav" aria-label="Primary navigation">
           <a href="/docs/install.html">Install</a>
           <a href="/docs/">Docs</a>
-          <a href="/docs/release-hosting.html">Release Hosting</a>
           <a href="https://github.com/eBioRing/styio.io">GitHub</a>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle color scheme">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
         </nav>
       </div>
     </header>
     <main class="wrap doc-layout">
       <nav class="side-nav" aria-label="Documentation navigation">
         <a href="/docs/install.html">Install</a>
-        <a href="/docs/release-hosting.html">Release Hosting</a>
-        <a href="/docs/release-root-contract.html">Release Root Contract</a>
-        <a href="/docs/dns-and-pages.html">DNS and Pages</a>
+        <a href="/docs/release-root-contract.html">Release Contract</a>
       </nav>
       <article class="doc">
         <h1>Styio docs</h1>
-        <p class="doc-lede">
-          The public docs focus on the alpha install path and the release-root
-          process used to make prebuilt CLI artifacts available.
-        </p>
         <div class="grid-2">
-          <section class="card">
-            <h3><a href="/docs/install.html">Install Styio</a></h3>
-            <p>One-line install command, supported targets, and verification commands.</p>
-          </section>
-          <section class="card">
-            <h3><a href="/docs/release-hosting.html">Release Hosting</a></h3>
-            <p>How maintainers publish a GitHub Release bundle into GitHub Pages.</p>
-          </section>
-          <section class="card">
-            <h3><a href="/docs/release-root-contract.html">Release Root Contract</a></h3>
-            <p>The static files that current spio clients read for tool installs.</p>
-          </section>
-          <section class="card">
-            <h3><a href="/docs/dns-and-pages.html">DNS and Pages</a></h3>
-            <p>Recommended domain mapping for styio.io and future package mirrors.</p>
-          </section>
+          <a class="card" href="/docs/install.html">
+            <h3>Install Styio</h3>
+            <p>One-line install command, supported targets, and verification.</p>
+          </a>
+          <a class="card" href="/docs/release-root-contract.html">
+            <h3>Release Contract</h3>
+            <p>Static file layout consumed by the shell installer and spio prebuilt tool installer.</p>
+          </a>
         </div>
       </article>
     </main>
-    <footer class="site-footer">
-      <div class="wrap footer-inner">
-        <span>Styio documentation</span>
-        <span><a href="/">Home</a></span>
-      </div>
-    </footer>
+    <footer class="site-footer" data-site-footer></footer>
     <script src="/assets/copy-code.js" defer></script>
+    <script src="/assets/site-footer.js" defer></script>
+    <script src="/assets/theme-toggle.js" defer></script>
   </body>
 </html>
