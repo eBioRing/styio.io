@@ -30,6 +30,7 @@
     <main class="wrap doc-layout">
       <nav class="side-nav" aria-label="Documentation navigation">
         <a href="#model">Model</a>
+        <a href="#names">Names</a>
         <a href="#bundle">Bundle</a>
         <a href="#publish">Publish</a>
         <a href="#workflow">Pages Workflow</a>
@@ -73,6 +74,34 @@
           </div>
         </div>
 
+        <h2 id="names">Release names</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Name</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>spio CLI</td>
+              <td><code>spio-v&lt;semver&gt;</code></td>
+              <td><code>spio-v0.1.0-alpha</code></td>
+            </tr>
+            <tr>
+              <td>Styio compiler</td>
+              <td><code>styio-v&lt;semver&gt;</code></td>
+              <td><code>styio-v0.0.1</code></td>
+            </tr>
+            <tr>
+              <td>Static release root</td>
+              <td><code>release-root-YYYY.MM.DD.N</code></td>
+              <td><code>release-root-2026.05.09.1</code></td>
+            </tr>
+          </tbody>
+        </table>
+
         <h2 id="bundle">Create a release-root bundle</h2>
         <p>
           Use <code>styio-platform</code>'s publisher to place each binary into
@@ -99,25 +128,33 @@ python3 /path/to/styio-platform/scripts/publish-spio-tool-release.py \
   --release-target styio-macos-cli \
   --channel stable
 
-scripts/validate-release-root.sh "$release_root"
-tar -C "$release_root" -czf styio-release-root-0.1.0-alpha.tar.gz tools</code></pre>
+scripts/package-release-root.sh \
+  --root "$release_root" \
+  --id release-root-2026.05.09.1 \
+  --output output/styio-release-root-2026.05.09.1.tar.gz</code></pre>
 
         <h2 id="publish">Upload to GitHub Releases</h2>
-        <pre><code>gh release create release-root-0.1.0-alpha \
-  styio-release-root-0.1.0-alpha.tar.gz \
+        <p>
+          The <code>Release Root</code> workflow validates the tarball, creates
+          or updates the GitHub Release asset, and can trigger a Pages deploy.
+        </p>
+        <pre><code>gh workflow run release-root.yml \
   --repo eBioRing/styio.io \
-  --title "Styio release root 0.1.0-alpha" \
-  --notes "Static release root for spio 0.1.0-alpha and styio 0.0.1"</code></pre>
+  -f release_root_id=release-root-2026.05.09.1 \
+  -f bundle_url=https://example.com/styio-release-root-2026.05.09.1.tar.gz \
+  -f release_asset_name=styio-release-root-2026.05.09.1.tar.gz \
+  -f deploy_pages=true</code></pre>
 
         <h2 id="workflow">Deploy through Pages</h2>
         <p>
-          Run the Pages workflow manually with the release bundle inputs:
+          The Pages workflow can also be run directly when the release asset
+          already exists:
         </p>
         <pre><code>gh workflow run pages.yml \
   --repo eBioRing/styio.io \
   -f release_bundle_repo=eBioRing/styio.io \
-  -f release_bundle_tag=release-root-0.1.0-alpha \
-  -f release_bundle_asset=styio-release-root-0.1.0-alpha.tar.gz</code></pre>
+  -f release_bundle_tag=release-root-2026.05.09.1 \
+  -f release_bundle_asset=styio-release-root-2026.05.09.1.tar.gz</code></pre>
 
         <h2 id="policy">Policy</h2>
         <ul>

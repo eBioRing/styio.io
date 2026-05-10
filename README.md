@@ -50,10 +50,27 @@ tools/styio-macos-cli/channel/stable/<platform>/version
 tools/styio-macos-cli/releases/<version>/<platform>/styio
 ```
 
-Build that tree with `styio-platform`'s release publisher, archive it as a
-release-root bundle, upload the bundle to a GitHub Release, then run the Pages
-workflow with the bundle inputs. The workflow extracts the bundle into the
-Pages deployment artifact, so binaries do not enter Git history.
+Use separate names for the three release layers:
+
+- CLI package tags use `spio-v<semver>`.
+- Compiler package tags use `styio-v<semver>`.
+- Static deployment snapshots use `release-root-YYYY.MM.DD.N`.
+
+Build the `tools/` tree with `styio-platform`'s release publisher, package it
+with metadata, publish it as a GitHub Release asset, then deploy Pages from that
+asset:
+
+```sh
+scripts/package-release-root.sh \
+  --root /path/to/release-root \
+  --id release-root-2026.05.09.1 \
+  --output output/styio-release-root-2026.05.09.1.tar.gz
+```
+
+The `Release Root` workflow can then validate the tarball, create or update the
+GitHub Release, and trigger the `Pages` workflow with the published asset. The
+Pages workflow extracts the bundle into the deployment artifact, so binaries do
+not enter Git history.
 
 See [docs/release-hosting.html](docs/release-hosting.html) for the operator
 flow and [docs/install.html](docs/install.html) for user-facing install notes.

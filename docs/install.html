@@ -31,6 +31,7 @@
         <a href="#quickstart">Quickstart</a>
         <a href="#targets">Targets</a>
         <a href="#verify">Verify</a>
+        <a href="#manage">Manage</a>
         <a href="#troubleshooting">Troubleshooting</a>
       </nav>
       <article class="doc">
@@ -89,6 +90,11 @@
         <h2 id="verify">Verify</h2>
         <pre><code>spio --version
 styio --version</code></pre>
+
+        <h2 id="manage">Manage installed compilers</h2>
+        <pre><code>spio tool list
+spio tool update --release-root https://styio.io
+spio tool uninstall --version 0.0.1 --channel stable</code></pre>
 
         <h2 id="troubleshooting">Troubleshooting</h2>
         <h3>Permission denied for /usr/local/bin</h3>

@@ -25,6 +25,7 @@ for path in \
   docs/dns-and-pages.html \
   assets/copy-code.js \
   assets/styio-logo.svg \
+  release-index.json \
   tools/spio/install-spio.sh
 do
   [ -f "$tmp_dir/site/$path" ] || fail "missing built site file: $path"

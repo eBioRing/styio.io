@@ -1,0 +1,103 @@
+name: Release Root
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_root_id:
+        description: "Release-root id, for example release-root-2026.05.09.1"
+        required: true
+      bundle_url:
+        description: "HTTPS URL for a packaged release-root tarball"
+        required: true
+      release_asset_name:
+        description: "Release asset name. Defaults to styio-<release_root_id>.tar.gz"
+        required: false
+        default: ""
+      deploy_pages:
+        description: "Trigger Pages deployment after publishing the release asset"
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: write
+  actions: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download bundle
+        id: bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_root_id="${{ inputs.release_root_id }}"
+          bundle_url="${{ inputs.bundle_url }}"
+          asset_name="${{ inputs.release_asset_name }}"
+
+          [[ "$release_root_id" =~ ^[A-Za-z0-9._-]+$ ]] || {
+            echo "unsafe release_root_id: $release_root_id" >&2
+            exit 1
+          }
+          [[ "$bundle_url" =~ ^https:// ]] || {
+            echo "bundle_url must be HTTPS" >&2
+            exit 1
+          }
+          if [[ -z "$asset_name" ]]; then
+            asset_name="styio-${release_root_id}.tar.gz"
+          fi
+          [[ "$asset_name" =~ ^[A-Za-z0-9._-]+\.tar\.gz$ ]] || {
+            echo "unsafe release asset name: $asset_name" >&2
+            exit 1
+          }
+
+          mkdir -p .release-bundle
+          curl -fsSL "$bundle_url" -o ".release-bundle/$asset_name"
+          echo "asset_name=$asset_name" >> "$GITHUB_OUTPUT"
+
+      - name: Validate bundle
+        run: |
+          scripts/build-site.sh _release-check ".release-bundle/${{ steps.bundle.outputs.asset_name }}"
+          REQUIRE_RELEASE_BINARIES=1 REQUIRE_RELEASE_METADATA=1 scripts/validate-release-root.sh _release-check
+
+      - name: Create release notes
+        run: |
+          cat > release-root-notes.md <<EOF
+          Styio release-root snapshot: ${{ inputs.release_root_id }}
+
+          This release stores the static tools/ tree consumed by styio.io Pages
+          and by spio installers. The bundle was validated before publishing.
+          EOF
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${{ inputs.release_root_id }}"
+          asset=".release-bundle/${{ steps.bundle.outputs.asset_name }}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "$asset" --clobber
+          else
+            gh release create "$tag" "$asset" \
+              --title "Styio release root $tag" \
+              --notes-file release-root-notes.md
+          fi
+
+      - name: Deploy Pages from release-root
+        if: ${{ inputs.deploy_pages }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run pages.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            -f release_bundle_repo="$GITHUB_REPOSITORY" \
+            -f release_bundle_tag="${{ inputs.release_root_id }}" \
+            -f release_bundle_asset="${{ steps.bundle.outputs.asset_name }}"

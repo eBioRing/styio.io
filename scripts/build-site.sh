@@ -25,12 +25,20 @@ copy_path() {
   cp -R "$source_path" "$site_dir/"
 }
 
+copy_optional_path() {
+  source_path="$repo_root/$1"
+  [ -e "$source_path" ] || return 0
+  cp -R "$source_path" "$site_dir/"
+}
+
 copy_path ".nojekyll"
 copy_path "404.html"
 copy_path "CNAME"
 copy_path "assets"
 copy_path "docs"
 copy_path "index.html"
+copy_optional_path "release-index.json"
+copy_optional_path "release-root.json"
 copy_path "robots.txt"
 copy_path "styles.css"
 copy_path "tools"
@@ -53,6 +61,9 @@ if [ -n "$bundle" ]; then
   [ -d "$tmp_dir/tools" ] || fail "release-root bundle must contain top-level tools/"
   rm -rf "$site_dir/tools"
   cp -R "$tmp_dir/tools" "$site_dir/tools"
+  if [ -f "$tmp_dir/release-root.json" ]; then
+    cp "$tmp_dir/release-root.json" "$site_dir/release-root.json"
+  fi
 fi
 
 "$script_dir/validate-release-root.sh" "$site_dir"

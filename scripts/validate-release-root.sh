@@ -35,6 +35,16 @@ sha256_value() {
   fail "sha256sum or shasum is required"
 }
 
+metadata_path="$root/release-root.json"
+if [ "${REQUIRE_RELEASE_METADATA:-0}" = "1" ] && [ ! -f "$metadata_path" ]; then
+  fail "release-root metadata is required but release-root.json is missing"
+fi
+if [ -f "$metadata_path" ]; then
+  grep -q '"kind"[[:space:]]*:[[:space:]]*"release-root"' "$metadata_path" || fail "release-root.json must declare kind release-root"
+  release_root_id="$(sed -n 's/.*"release_root_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$metadata_path" | head -n 1)"
+  safe_segment "$release_root_id" || fail "unsafe release_root_id in release-root.json: $release_root_id"
+fi
+
 release_count=0
 while IFS= read -r binary_path; do
   [ -n "$binary_path" ] || continue

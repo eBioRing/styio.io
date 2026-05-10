@@ -28,6 +28,7 @@
     </header>
     <main class="wrap doc-layout">
       <nav class="side-nav" aria-label="Documentation navigation">
+        <a href="#metadata">Metadata</a>
         <a href="#spio">spio</a>
         <a href="#styio">styio</a>
         <a href="#targets">Targets</a>
@@ -38,6 +39,17 @@
         <p class="doc-lede">
           This is the static file layout that the current shell installer and
           spio prebuilt tool installer consume.
+        </p>
+
+        <h2 id="metadata">Release-root metadata</h2>
+        <pre><code>release-index.json
+release-root.json
+tools/...</code></pre>
+        <p>
+          <code>release-index.json</code> is the stable public index for the
+          hosted service. <code>release-root.json</code> is generated inside each
+          release-root bundle and records the deployment snapshot id, for
+          example <code>release-root-2026.05.09.1</code>.
         </p>
 
         <h2 id="spio">spio installer paths</h2>
@@ -107,6 +119,7 @@ tools/&lt;release-target&gt;/latest.json</code></pre>
           <li>Every binary has a sibling <code>.sha256</code> text file.</li>
           <li>Platform keys use <code>darwin-aarch64</code>, <code>linux-aarch64</code>, or <code>linux-musl-aarch64</code> for the first alpha.</li>
           <li>Release-root bundles are extracted into the Pages artifact, not committed to Git.</li>
+          <li>New release-root bundles include <code>release-root.json</code> metadata.</li>
         </ul>
       </article>
     </main>

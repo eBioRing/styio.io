@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "service": "styio-release-root",
+  "canonical_origin": "https://styio.io",
+  "github_release_repo": "eBioRing/styio.io",
+  "current_release_root": {
+    "id": "release-root-0.1.0-alpha",
+    "asset": "styio-release-root-0.1.0-alpha.tar.gz",
+    "notes": "Initial alpha snapshot. Future snapshots should use date-based release-root ids such as release-root-2026.05.09.1."
+  },
+  "tools": [
+    {
+      "name": "spio",
+      "latest": "https://styio.io/tools/spio/latest.json",
+      "current_version": "0.1.0-alpha"
+    },
+    {
+      "name": "styio-linux",
+      "latest": "https://styio.io/tools/styio-linux/latest.json",
+      "current_version": "0.0.1"
+    },
+    {
+      "name": "styio-macos-cli",
+      "latest": "https://styio.io/tools/styio-macos-cli/latest.json",
+      "current_version": "0.0.1"
+    }
+  ],
+  "naming": {
+    "spio_cli": "spio-v<semver>",
+    "styio_compiler": "styio-v<semver>",
+    "release_root_snapshot": "release-root-YYYY.MM.DD.N"
+  }
+}
