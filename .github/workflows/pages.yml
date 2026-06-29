@@ -15,7 +15,7 @@ on:
         required: false
         default: ""
       release_bundle_asset:
-        description: "Release asset name, for example styio-release-root-0.1.0-alpha.tar.gz"
+        description: "Release asset name, for example styio-release-root-YYYY.MM.DD.N.tar.gz"
         required: false
         default: ""
 
